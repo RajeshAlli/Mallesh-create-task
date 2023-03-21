@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: rajesh  
-        image: allirajesh/rajesh:tagname
+        image: allirajesh/rajesh:spring-v1
         ports:
         - containerPort: 8080
