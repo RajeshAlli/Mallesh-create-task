@@ -559,4 +559,4 @@ tests:
       registry: docker.io
       repository: dduportal/bats
       tag: 0.4.0
-    #resources: {}
+    #  resources: {}
