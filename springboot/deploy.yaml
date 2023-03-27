@@ -17,5 +17,8 @@ spec:
       containers:
       - name: Spring-v1 
         image: allirajesh/rajesh:spring-v1
+        readinessProbe:
+            tcpSocket:
+              port: 8080
         ports:
         - containerPort: 8080
