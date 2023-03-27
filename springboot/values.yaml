@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: malleshdevops/demo-project
+  repository: allirajesh/rajesh
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "devops-spring-boot-v1"
+  tag: "spring-v1"
 
 imagePullSecrets: ["name": "docker-secret"]
 nameOverride: ""
