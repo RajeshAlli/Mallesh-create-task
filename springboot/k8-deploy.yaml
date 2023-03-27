@@ -27,5 +27,5 @@ spec:
         type: web
     spec:
       containers:
-        - name: spring-v1
+        - name: Spring-v1
           image: allirajesh/rajesh:spring-v1
