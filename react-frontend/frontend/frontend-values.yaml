@@ -5,10 +5,10 @@
 #replicaCount: 1
 
 image:
-  repository: malleshdevops/createat-devops-task
+  repository: allirajesh/rajesh-react
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "react-v11"
+  tag: "react-v1"
 
 imagePullSecrets: []
 nameOverride: ""
