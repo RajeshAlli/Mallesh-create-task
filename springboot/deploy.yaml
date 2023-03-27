@@ -15,7 +15,7 @@ spec:
         app: nginx
     spec:
       containers:
-      - name: rajesh  
+      - name: Spring-v1 
         image: allirajesh/rajesh:spring-v1
         ports:
         - containerPort: 8080
