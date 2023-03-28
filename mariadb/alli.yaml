@@ -1,0 +1,529 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: "9104"
+    prometheus.io/scrape: "true"
+  labels:
+    app: mariadb
+    component: master
+    release: rajesh-mariadb
+  name: rajesh-mariadb
+  namespace: rajeshalli
+  resourceVersion: "163323"
+  uid: 6c46e4f8-92dc-4069-8f7f-d6b62726a447
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+    protocol: TCP
+    targetPort: mysql
+  - name: metrics
+    port: 9104
+    protocol: TCP
+    targetPort: metrics
+  selector:
+    app: mariadb
+    component: master
+    release: rajesh-mariadb
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIC5zCCAc+gAwIBAgIBADANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwprdWJl
+    cm5ldGVzMB4XDTIzMDMyNzE3NTY0MloXDTMzMDMyNDE3NTY0MlowFTETMBEGA1UE
+    AxMKa3ViZXJuZXRlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0n
+    8HRTKQWr7v/1WODjd3PK/t8AKVBiM0uyL8GBxxUmtpky8zAFYhEuGO5jsDE5nJzG
+    Y7CSMwBOLbaCMtGDjSSXjiFXevw4fHG1Kz2fCRtVpBoFcmTkTMQr9Kn3Oe6DD0da
+    YkXvsv1TgZ9Vl06DOpQgn9hUZwQo+HOSGyaHbjkl3cwj/H1x41hPRaAQer7lHBRE
+    Dts8CnuBBsotB29qIMHIyDX0kw8KS04v5wKOuR41Z31KX3HnpP6k38LYMemChOsf
+    nBq4EB08WK7rPdSFHvFJe3V9dWpMj5ZlVwM0fR9c37QgX/zVVhKdiglAWwfOYFZ9
+    54jNnn7fLqtyVjOaxjMCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgKkMA8GA1UdEwEB
+    /wQFMAMBAf8wHQYDVR0OBBYEFOZT9l3OkENduhSgN73OX9yWNTYVMA0GCSqGSIb3
+    DQEBCwUAA4IBAQA4oIdneTDkZB2u8A2dx0wq7jdyFhF00gtaKYSmkTxU6Fk8N6MG
+    cRMnc6rJcbXeHVaNwIsnJKyLBgWMLTml/qxQjJTwposyjEfDOknzyGzM5eYoMIEk
+    S89RNM0EJWPpFXyjvrmMTj8FtJ9Hrdqmmdywh/qSmS6Nis2oWzBWNR/FhfCcZrXq
+    O2UYy9FfuQJNAJZM/atBn3x8zEAz8T0Pvn6F43nhogM5hwIGQApfeUx7hmwcQ9zL
+    tpS+yHBX535IR+c/fDAbxIe/REU+KSlKMSpRPyj8IXsDOGaHGszJsA75F57Zs2ar
+    4ZPjEv76oTu8HQPuS2KbBo6RqtO19MrQWrVQ
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  name: kub-root-ca.crt
+  namespace: rajeshalli
+  resourceVersion: "163320"
+  uid: de94a3c9-69ad-488e-be47-9e51d095787d
+---
+apiVersion: v1
+data:
+  my.cnf: |-
+    [mysqld]
+    skip-name-resolve
+    explicit_defaults_for_timestamp
+    basedir=/opt/bitnami/mariadb
+    plugin_dir=/opt/bitnami/mariadb/plugin
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    tmpdir=/opt/bitnami/mariadb/tmp
+    max_allowed_packet=16M
+    bind-address=0.0.0.0
+    pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+    log-error=/opt/bitnami/mariadb/logs/mysqld.log
+    character-set-server=UTF8
+    collation-server=utf8_general_ci
+
+    [client]
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    default-character-set=UTF8
+    plugin_dir=/opt/bitnami/mariadb/plugin
+
+    [manager]
+    port=3306
+    socket=/opt/bitnami/mariadb/tmp/mysql.sock
+    pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
+kind: ConfigMap
+metadata:
+  labels:
+    app: mariadb
+    app.kubernetes.io/managed-by: Helm
+    chart: mariadb-7.3.14
+    component: master
+    release: rajesh-mariadb
+  name: rajesh-mariadb
+  namespace: rajeshalli
+  resourceVersion: "163319"
+  uid: 74137b88-9146-4ba5-af62-5fc1e0ebf010
+---
+apiVersion: v1
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM1ekNDQWMrZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJek1ETXlOekUzTlRZME1sb1hEVE16TURNeU5ERTNOVFkwTWxvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTDBuCjhIUlRLUVdyN3YvMVdPRGpkM1BLL3Q4QUtWQmlNMHV5TDhHQnh4VW10cGt5OHpBRlloRXVHTzVqc0RFNW5KekcKWTdDU013Qk9MYmFDTXRHRGpTU1hqaUZYZXZ3NGZIRzFLejJmQ1J0VnBCb0ZjbVRrVE1RcjlLbjNPZTZERDBkYQpZa1h2c3YxVGdaOVZsMDZET3BRZ245aFVad1FvK0hPU0d5YUhiamtsM2N3ai9IMXg0MWhQUmFBUWVyN2xIQlJFCkR0czhDbnVCQnNvdEIyOXFJTUhJeURYMGt3OEtTMDR2NXdLT3VSNDFaMzFLWDNIbnBQNmszOExZTWVtQ2hPc2YKbkJxNEVCMDhXSzdyUGRTRkh2RkplM1Y5ZFdwTWo1WmxWd00wZlI5YzM3UWdYL3pWVmhLZGlnbEFXd2ZPWUZaOQo1NGpObm43ZkxxdHlWak9heGpNQ0F3RUFBYU5DTUVBd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0hRWURWUjBPQkJZRUZPWlQ5bDNPa0VOZHVoU2dONzNPWDl5V05UWVZNQTBHQ1NxR1NJYjMKRFFFQkN3VUFBNElCQVFBNG9JZG5lVERrWkIydThBMmR4MHdxN2pkeUZoRjAwZ3RhS1lTbWtUeFU2Rms4TjZNRwpjUk1uYzZySmNiWGVIVmFOd0lzbkpLeUxCZ1dNTFRtbC9xeFFqSlR3cG9zeWpFZkRPa256eUd6TTVlWW9NSUVrClM4OVJOTTBFSldQcEZYeWp2cm1NVGo4RnRKOUhyZHFtbWR5d2gvcVNtUzZOaXMyb1d6QldOUi9GaGZDY1pyWHEKTzJVWXk5RmZ1UUpOQUpaTS9hdEJuM3g4ekVBejhUMFB2bjZGNDNuaG9nTTVod0lHUUFwZmVVeDdobXdjUTl6TAp0cFMreUhCWDUzNUlSK2MvZkRBYnhJZS9SRVUrS1NsS01TcFJQeWo4SVhzRE9HYUhHc3pKc0E3NUY1N1pzMmFyCjRaUGpFdjc2b1R1OEhRUHVTMktiQm82UnF0TzE5TXJRV3JWUQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  namespace: ZGF0YWJhc2U=
+  token: ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklsSk9RemRYTFZkT05UTkxSRmxNWlRkcmRrMTBiRWw2Y2tsdVpUZGFhbEZKTlcxUFNFNXlWVEZ5TTFVaWZRLmV5SnBjM01pT2lKcmRXSmxjbTVsZEdWekwzTmxjblpwWTJWaFkyTnZkVzUwSWl3aWEzVmlaWEp1WlhSbGN5NXBieTl6WlhKMmFXTmxZV05qYjNWdWRDOXVZVzFsYzNCaFkyVWlPaUprWVhSaFltRnpaU0lzSW10MVltVnlibVYwWlhNdWFXOHZjMlZ5ZG1salpXRmpZMjkxYm5RdmMyVmpjbVYwTG01aGJXVWlPaUprWldaaGRXeDBMWFJ2YTJWdUxXUnJPSFEySWl3aWEzVmlaWEp1WlhSbGN5NXBieTl6WlhKMmFXTmxZV05qYjNWdWRDOXpaWEoyYVdObExXRmpZMjkxYm5RdWJtRnRaU0k2SW1SbFptRjFiSFFpTENKcmRXSmxjbTVsZEdWekxtbHZMM05sY25acFkyVmhZMk52ZFc1MEwzTmxjblpwWTJVdFlXTmpiM1Z1ZEM1MWFXUWlPaUk1T0Rrek1UTmhNeTB3T1RNNUxUUTFaR1l0WWpGak5DMDNOR1ptTVdJNVpqa3hNamdpTENKemRXSWlPaUp6ZVhOMFpXMDZjMlZ5ZG1salpXRmpZMjkxYm5RNlpHRjBZV0poYzJVNlpHVm1ZWFZzZENKOS5NeWs5QWRXckNaNllHYXZOSnZJVGwxamZ2ZGxEbTZCR1ZHVFg5MTVuQnpYa3BVWk5jY0NYYngtSjVnQmM1ajdQaDZLZnotaEE0bmFzM21sMGJZRXF0Sm1kaVZZNDRqbzJxZDRzMm9DRm1pZE1FaU51VDBQX0QwUC0xRXB4UGpXWFVWY3JVRzR4Ymd6LXBDcVB4cnlsZXJ4ckQ3QkpUX2otVnFyNWFieE5XVXRFOFlNUEY4cUdvVlJYc0hKY2hWVVRfYnpieGZwaENQZ2x2V3pNVkZvZmpPdEVyVFpocTRPUXNFWmdGLTlSLVgtLUdsVlJOMFZxWVZXRkQtY0NXOFZwWUdodWZKYjdfcmJaR1ZOMW0zMFpORWk5eFZZX3FmYUZrcC1zZl81YlUxdV9zZFp3WTliVXZCOHVvLXdPQWh0UUlCYUdQMUtUM0RfU2VhUExWMTZYYWc=
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: default
+    kubernetes.io/service-account.uid: 989313a3-0939-45df-b1c4-74ff1b9f9128
+  name: default-token-dk8t6
+  namespace: rajeshalli
+  resourceVersion: "163324"
+  uid: 5445a787-d1be-4904-bb8f-ffa817956e08
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+data:
+  mariadb-password: ZGV2b3BzQDIwMjI=
+  mariadb-root-password: cm9vdEAxMjM=
+kind: Secret
+metadata:
+  labels:
+    app: mariadb
+    app.kubernetes.io/managed-by: Helm
+    chart: mariadb-7.3.14
+    release: rajesh-mariadb
+  name: rajesh-mariadb
+  namespace: rajeshalli
+  resourceVersion: "163318"
+  uid: 0f1eb455-22ac-4a54-aeab-ede66f8f77d2
+type: Opaque
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  generation: 1
+  labels:
+    app: mariadb
+    component: master
+    release: rajesh-mariadb
+  name: rajesh-mariadb
+  namespace: rajeshalli
+  resourceVersion: "163598"
+  uid: 7917170c-b454-4e43-9e4d-79a119e82ff8
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: mariadb
+      component: master
+      release: rajesh-mariadb
+  serviceName: rajesh-mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+        chart: mariadb-7.3.14
+        component: master
+        release: rajesh-mariadb
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: mariadb
+                  release: rajesh-mariadb
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      containers:
+      - env:
+        - name: MARIADB_ROOT_PASSWORD_FILE
+          value: /opt/bitnami/mariadb/secrets/mariadb-root-password
+        - name: MARIADB_USER
+          value: devops
+        - name: MARIADB_PASSWORD_FILE
+          value: /opt/bitnami/mariadb/secrets/mariadb-password
+        - name: MARIADB_DATABASE
+          value: employee_management_system
+        image: docker.io/bitnami/mariadb:10.3.22-debian-10-r27
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - |
+              password_aux="${MARIADB_ROOT_PASSWORD:-}"
+              if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+                  password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+              fi
+              mysqladmin status -uroot -p$password_aux
+          failureThreshold: 3
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: mariadb
+        ports:
+        - containerPort: 3306
+          name: mysql
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - |
+              password_aux="${MARIADB_ROOT_PASSWORD:-}"
+              if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+                  password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+              fi
+              mysqladmin status -uroot -p$password_aux
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /bitnami/mariadb
+          name: data
+        - mountPath: /opt/bitnami/mariadb/conf/my.cnf
+          name: config
+          subPath: my.cnf
+        - mountPath: /opt/bitnami/mariadb/secrets/
+          name: mariadb-credentials
+      - command:
+        - sh
+        - -c
+        - |
+          password_aux="${MARIADB_ROOT_PASSWORD:-}"
+          if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+              password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+          fi
+          DATA_SOURCE_NAME="root:${password_aux}@(localhost:3306)/" /bin/mysqld_exporter
+        env:
+        - name: MARIADB_ROOT_PASSWORD_FILE
+          value: /opt/bitnami/mysqld-exporter/secrets/mariadb-root-password
+        image: docker.io/bitnami/mysqld-exporter:0.12.1-debian-10-r27
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: metrics
+            scheme: HTTP
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: metrics
+        ports:
+        - containerPort: 9104
+          name: metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: metrics
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/bitnami/mysqld-exporter/secrets/
+          name: mariadb-credentials
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: rajesh-mariadb
+        name: config
+      - name: mariadb-credentials
+        secret:
+          defaultMode: 420
+          items:
+          - key: mariadb-root-password
+            path: mariadb-root-password
+          - key: mariadb-password
+            path: mariadb-password
+          secretName: rajesh-mariadb
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mariadb
+        component: master
+        heritage: Helm
+        release: rajesh-mariadb
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi
+      volumeMode: Filesystem
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubernetes.io/psp: eks.privileged
+  generateName: rajesh-mariadb- 
+  labels:
+    app: mariadb
+    chart: mariadb-7.3.14
+    component: master
+    controller-revision-hash: rajesh-mariadb-67cd75864
+    release: rajesh-mariadb
+    statefulset.kubernetes.io/pod-name: rajesh-mariadb-0
+  name: rajesh-mariadb-0
+  namespace: rajeshalli
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: StatefulSet
+    name: rajesh-mariadba
+    uid: 7917170c-b454-4e43-9e4d-79a119e82ff8
+  resourceVersion: "163595"
+  uid: 4eb283bb-f8ac-4ab6-8b2a-687bfd7d3e8a
+spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: mariadb
+              release: rajesh-mariadb
+          topologyKey: kubernetes.io/hostname
+        weight: 1
+  containers:
+  - env:
+    - name: MARIADB_ROOT_PASSWORD_FILE
+      value: /opt/bitnami/mariadb/secrets/mariadb-root-password
+    - name: MARIADB_USER
+      value: devops
+    - name: MARIADB_PASSWORD_FILE
+      value: /opt/bitnami/mariadb/secrets/mariadb-password
+    - name: MARIADB_DATABASE
+      value: employee_management_system
+    image: docker.io/bitnami/mariadb:10.3.22-debian-10-r27
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      exec:
+        command:
+        - sh
+        - -c
+        - |
+          password_aux="${MARIADB_ROOT_PASSWORD:-}"
+          if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+              password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+          fi
+          mysqladmin status -uroot -p$password_aux
+      failureThreshold: 3
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    name: mariadb
+    ports:
+    - containerPort: 3306
+      name: mysql
+      protocol: TCP
+    readinessProbe:
+      exec:
+        command:
+        - sh
+        - -c
+        - |
+          password_aux="${MARIADB_ROOT_PASSWORD:-}"
+          if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+              password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+          fi
+          mysqladmin status -uroot -p$password_aux
+      failureThreshold: 3
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /bitnami/mariadb
+      name: data
+    - mountPath: /opt/bitnami/mariadb/conf/my.cnf
+      name: config
+      subPath: my.cnf
+    - mountPath: /opt/bitnami/mariadb/secrets/
+      name: mariadb-credentials
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-bht8b
+      readOnly: true
+  - command:
+    - sh
+    - -c
+    - |
+      password_aux="${MARIADB_ROOT_PASSWORD:-}"
+      if [ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]; then
+          password_aux=$(cat $MARIADB_ROOT_PASSWORD_FILE)
+      fi
+      DATA_SOURCE_NAME="root:${password_aux}@(localhost:3306)/" /bin/mysqld_exporter
+    env:
+    - name: MARIADB_ROOT_PASSWORD_FILE
+      value: /opt/bitnami/mysqld-exporter/secrets/mariadb-root-password
+    image: docker.io/bitnami/mysqld-exporter:0.12.1-debian-10-r27
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /metrics
+        port: metrics
+        scheme: HTTP
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    name: metrics
+    ports:
+    - containerPort: 9104
+      name: metrics
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /metrics
+        port: metrics
+        scheme: HTTP
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /opt/bitnami/mysqld-exporter/secrets/
+      name: mariadb-credentials
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-bht8b
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostname: rajesh-mariadb-0
+  nodeName: ip-10-0-2-22.ec2.internal
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 1001
+    runAsUser: 1001
+  serviceAccount: default
+  serviceAccountName: default
+  subdomain: rajesh-mariadb
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: data-rajesh-mariadb-0
+  - configMap:
+      defaultMode: 420
+      name: rajesh-mariadb
+    name: config
+  - name: mariadb-credentials
+    secret:
+      defaultMode: 420
+      items:
+      - key: mariadb-root-password
+        path: mariadb-root-password
+      - key: mariadb-password
+        path: mariadb-password
+      secretName: rajesh-mariadb
+  - name: kube-api-access-bht8b
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
