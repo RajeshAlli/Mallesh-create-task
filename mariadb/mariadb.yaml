@@ -3,10 +3,11 @@ kind: Namespace
 metadata:
   name: database
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
   name: mariadb-deployment
+  namepsace: database
   labels:
     app: mariadb
     type: database
