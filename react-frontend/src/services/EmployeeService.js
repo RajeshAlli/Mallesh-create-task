@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const EMPLOYEE_API_BASE_URL = "http://aca2d4221178d40759a64e493d7322ec-962846401.us-east-1.elb.amazonaws.com:8080/api/v1/employees";
+const EMPLOYEE_API_BASE_URL = "http://abe001ff72de6440c91070b01df5adb5-1824591525.us-east-1.elb.amazonaws.com:8080/api/v1/employees";
 
 class EmployeeService {
 
